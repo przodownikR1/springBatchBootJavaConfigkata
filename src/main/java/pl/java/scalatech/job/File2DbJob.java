@@ -92,9 +92,9 @@ public class File2DbJob {
     public ItemProcessor<Person, Person> processor() {
         return item ->
         {
-            final String firstName = item.getLogin().toUpperCase();
-            String passwd = Hashing.md5().hashString("passwd_" + firstName, Charsets.UTF_8).toString();
-            final Person transformed = new Person(firstName, passwd, item.getAge());
+            final String login = item.getLogin().toUpperCase();
+            String passwd = Hashing.md5().hashString("passwd_" + login, Charsets.UTF_8).toString();
+            final Person transformed = Person.builder().login(login).passwd(passwd).age(item.getAge()).build();
             log.info("flat transform (" + item + ") -> (" + transformed + ")");
             return transformed;
         };
