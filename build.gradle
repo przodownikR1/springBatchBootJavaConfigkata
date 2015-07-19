@@ -1,0 +1,39 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.2.5.RELEASE")
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'spring-boot'
+
+jar {
+    baseName = 'simple-spring-batch-javaconfig'
+    version =  '0.0.1'
+}
+
+repositories {
+    mavenCentral()
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+dependencies {
+    compile("org.springframework.boot:spring-boot-starter-batch")
+    compile("org.springframework.boot:spring-boot-starter-logging")
+    compile("org.hsqldb:hsqldb")
+    testCompile("junit:junit")
+    compile("org.projectlombok:lombok:1.16.4")
+    compile("com.google.guava:guava:18.0")
+    testCompile('junit:junit:4.12')
+    testCompile 'org.assertj:assertj-core:3.1.0'
+    testCompile("org.springframework.boot:spring-boot-starter-test")
+}
+
+task wrapper(type: Wrapper) {
+ 
+}
