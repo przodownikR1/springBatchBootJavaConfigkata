@@ -1,6 +1,4 @@
-package pl.java.scalatech.config;
-
-import java.util.Collections;
+package pl.java.scalatech.job;
 
 import javax.annotation.PostConstruct;
 
@@ -15,6 +13,7 @@ import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.support.ListItemReader;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,28 +25,34 @@ public class JobConfig {
     public void init() {
         log.info(":: jobConfig");
     }
+    @Autowired
+    private JobBuilderFactory jobBuilders;
+
+    @Autowired
+    private StepBuilderFactory stepBuilders;
+    
     
     @Bean
     @StepScope
-    public ItemReader<String> reader(@Value("#{jobParameters[message]}") String text) {
+    public ItemReader<String> firstReader(@Value("#{jobParameters[message]}") String text) {
         log.info("+++ r-r-r  {} ", text);
       return new ListItemReader<>(Lists.newArrayList(text));
     }
     
     @Bean
     @StepScope
-    public ItemWriter<String> writer(@Value("#{jobParameters[message]}") String text) {
+    public ItemWriter<String> firstWriter(@Value("#{jobParameters[message]}") String text) {
       log.info("+++ w-w-w  {} ", text);
       return value -> log.info("w-w-w:  {}",value);
     }
     
-    @Bean
-    public Step step1(StepBuilderFactory steps, ItemReader<String> reader, ItemWriter<String> writer) throws Exception {
-      return steps.get("step1").<String, String> chunk(0).reader(reader).writer(writer).build();
+    @Bean(name="first")
+    public Step firstStep(ItemReader<String> firstReader, ItemWriter<String> firstWriter) throws Exception {
+      return stepBuilders.get("firstStep").<String, String> chunk(0).reader(firstReader).writer(firstWriter).build();
     }
 
-    @Bean
-    public Job firstJob(JobBuilderFactory jobs, Step step1) throws Exception {
-      return jobs.get("firstJob").start(step1).build();
+    @Bean(name="firstJob")
+    public Job firstJob(JobBuilderFactory jobs,ItemReader<String> firstReader, ItemWriter<String> firstWriter) throws Exception {
+      return jobs.get("firstJob").start(firstStep(firstReader,firstWriter)).build();
     }
 }

@@ -14,7 +14,6 @@ import org.springframework.util.StopWatch;
 
 @Slf4j
 @Component
-@Profile("test")
 public class JobLoggerListener implements JobExecutionListener {
     private StopWatch stopWatch;
 
